@@ -29,9 +29,18 @@ judgements_dict = {judgement['submission_id']: judgement for judgement in judgem
 def to_timedelta(duration_string):
     return datetime.datetime.strptime(duration_string, '%H:%M:%S.%f') - datetime.datetime(1900, 1, 1)
 
+contest_duration = to_timedelta(contest['duration'])
+
+def valid_submission(submission):
+    team_id = submission['team_id']
+    time = int(to_timedelta(submission['contest_time']).total_seconds())
+    return team_id in valid_team_ids and time < int(contest_duration.total_seconds())
+
+submissions = list(filter(valid_submission, submissions))
+
 print('')
 print('@contest', contest['name'])
-print('@contlen', int(to_timedelta(contest['duration']).total_seconds()) // 60)
+print('@contlen', int(contest_duration.total_seconds()) // 60)
 print('@problems', len(problems))
 print('@teams', len(teams))
 print('@submissions', len(submissions))
@@ -54,8 +63,8 @@ result_map = {
 submission_counter = collections.Counter()
 
 for submission in submissions:
-    team_id = submission['team_id']
-    if team_id in valid_team_ids:
+    if valid_submission(submission):
+        team_id = submission['team_id']
         problem_id = problems_dict[submission['problem_id']]['label']
         submission_counter[(team_id, problem_id)] += 1
         print('@s', ','.join([team_id,

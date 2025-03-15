@@ -63,12 +63,11 @@ result_map = {
 submission_counter = collections.Counter()
 
 for submission in submissions:
-    if valid_submission(submission):
-        team_id = submission['team_id']
-        problem_id = problems_dict[submission['problem_id']]['label']
-        submission_counter[(team_id, problem_id)] += 1
-        print('@s', ','.join([team_id,
-                            problem_id,
-                            str(submission_counter[(team_id, problem_id)]),
-                            str(int(to_timedelta(submission['contest_time']).total_seconds())),
-                            result_map[judgements_dict[submission['id']]['judgement_type_id']]]))
+    team_id = submission['team_id']
+    problem_id = problems_dict[submission['problem_id']]['label']
+    submission_counter[(team_id, problem_id)] += 1
+    print('@s', ','.join([team_id,
+                        problem_id,
+                        str(submission_counter[(team_id, problem_id)]),
+                        str(int(to_timedelta(submission['contest_time']).total_seconds())),
+                        result_map[judgements_dict[submission['id']]['judgement_type_id']]]))

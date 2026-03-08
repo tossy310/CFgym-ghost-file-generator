@@ -33,7 +33,11 @@ contest_duration = to_timedelta(contest['duration'])
 
 def valid_submission(submission):
     team_id = submission['team_id']
-    time = int(to_timedelta(submission['contest_time']).total_seconds())
+    submission_time = submission['contest_time']
+    # Workaround to exclude submissiona before contest starts, very likely by jury.
+    if submission_time[0] == '-':
+        return False
+    time = int(to_timedelta(submission_time).total_seconds())
     return team_id in valid_team_ids and time < int(contest_duration.total_seconds())
 
 submissions = list(filter(valid_submission, submissions))

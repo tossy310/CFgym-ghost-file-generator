@@ -10,6 +10,7 @@ Instructions:
 import collections
 import datetime
 import requests
+import json
 
 BASE_URL = 'http://localhost:12345'
 CONTEST_ID = 3
@@ -53,7 +54,9 @@ for problem in problems:
     print('@p', ','.join([problem['label'], problem['name'], '20', '0']))
 
 for team in teams:
-    print('@t', ','.join([team['id'], '0', '1', f"\"{team['name']} ({team['affiliation']})\""]))
+    team_name = team['display_name'] if 'display_name' in team else team['name']
+    safe_team_name = json.dumps(f"{team_name} ({team['affiliation']})")
+    print('@t', ','.join([team['id'], '0', '1', safe_team_name]))
 
 result_map = {
     'AC': 'OK',
